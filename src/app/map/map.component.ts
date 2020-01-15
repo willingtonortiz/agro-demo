@@ -7,7 +7,7 @@ import * as Leaflet from "leaflet";
 	styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements AfterViewInit {
-	public map;
+	public map: Leaflet.DrawMap;
 
 	constructor() { }
 
@@ -23,11 +23,34 @@ export class MapComponent implements AfterViewInit {
 		});
 
 		// Map layers
-		const tiles = Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+		const tiles = Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 19,
 			attribution: "Gracias OpenStreetMap :3"
 		})
 		tiles.addTo(this.map);
+
+		const drawItems = new Leaflet.FeatureGroup();
+
+		const drawControl = new Leaflet.Control.Draw({
+			position: "topleft",
+			draw: {
+				polygon: {
+					shapeOptions: {
+						color: "#323232",
+						opacity: 1,
+						weight: 5
+					},
+					showArea: true,
+				},
+				marker: false,
+				circle: false,
+				circlemarker: false,
+				rectangle: false,
+				polyline: false,
+			},
+		});
+		this.map.addControl(drawControl);
+
 
 	}
 }
