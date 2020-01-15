@@ -31,6 +31,7 @@ export class MapComponent implements AfterViewInit {
 
 		const drawItems = new Leaflet.FeatureGroup();
 
+		// Adding controls
 		const drawControl = new Leaflet.Control.Draw({
 			position: "topleft",
 			draw: {
@@ -51,6 +52,13 @@ export class MapComponent implements AfterViewInit {
 		});
 		this.map.addControl(drawControl);
 
+		this.map.on(Leaflet.Draw.Event.CREATED, () => {
+			this.test();
+		});
+	}
 
+
+	public test() {
+		console.log("Clicked")
 	}
 }
