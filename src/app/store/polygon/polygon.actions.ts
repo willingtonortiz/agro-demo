@@ -12,4 +12,10 @@ export namespace PolygonActions {
 
 		public constructor(public properties: Partial<PolygonStateModel>) { }
 	}
+
+	export class FetchPolygonInfo {
+		static readonly type = '[Polygon] Fetch Polygon Info';
+
+		public constructor() { }
+	}
 }

@@ -54,6 +54,11 @@ export class PolygonState {
 			console.log(`[ERROR] ${PolygonActions.CreatePolygon.type}`);
 		}
 	}
+
+	@Action(PolygonActions.FetchPolygonInfo)
+	public async fetchPolygonInfo({ }: StateContext<PolygonStateModel>) {
+
+	}
 }
 
 /*
