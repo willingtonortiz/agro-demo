@@ -18,4 +18,5 @@ export namespace PolygonActions {
 
 		public constructor() { }
 	}
+
 }
