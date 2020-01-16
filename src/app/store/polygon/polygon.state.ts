@@ -47,6 +47,8 @@ export class PolygonState {
 				}
 			});
 
+			console.log(geoJson);
+
 			const data = await this.agroApiHttpService.createPolygon(polygon.name, geoJson);
 			console.log(data);
 
