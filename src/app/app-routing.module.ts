@@ -12,6 +12,9 @@ const routes: Routes = [{
 	path: 'map',
 	loadChildren: () => import('./modules/map/map.module').then(m => m.MapModule)
 }, {
+	path: 'graphs',
+	loadChildren: () => import('./modules/graphics/graphics.module').then(m => m.GraphicsModule)
+}, {
 	path: 'test',
 	loadChildren: () => import('./modules/test/test.module').then(m => m.TestModule)
 }];
