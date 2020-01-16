@@ -9,7 +9,7 @@ export class AgroApiHttpService {
 	constructor(private readonly httpClient: HttpClient) {
 	}
 
-	public async createPolygon(name: string, geoJson: string): Promise<any> {
+	public async createPolygon(name: string, geoJson: any): Promise<any> {
 
 		try {
 
@@ -18,7 +18,7 @@ export class AgroApiHttpService {
 				geo_json: geoJson
 			}).toPromise();
 
-			return response.id
+			return response;
 
 		} catch (error) {
 			console.log("ERROR EN AGROAPI [CREATE POLYGON]");
@@ -39,14 +39,12 @@ export class AgroApiHttpService {
 	public async getPolygonInfo(polygonId: string) {
 		try {
 			const startDate = 0;
-			const endDate = Date.now();
+			const endDate = 1578960000;
 			const apiKey = "9d411dc6b0e4cc020bd8b3b2e4ef69cc";
 
-			const response: any = await this.httpClient.get(`http://api.agromonitoring.com/agro/1.0/image/search?start=${startDate}&end=${endDate}&polyid=${polygonId}&appid=${apiKey}`).toPromise();
+			const data: any = await this.httpClient.get(`http://api.agromonitoring.com/agro/1.0/image/search?start=${startDate}&end=${endDate}&polyid=${polygonId}&appid=${apiKey}`).toPromise();
 
-			console.log(response);
-			console.log(JSON.stringify(response));
-			return response;
+			return data;
 		} catch (error) {
 			console.log("ERROR EN AGROAPI [GET POLYGON INFO]");
 			return null;
