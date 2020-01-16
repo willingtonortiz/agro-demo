@@ -19,7 +19,7 @@ export class MapComponent implements AfterViewInit {
 	public initMap(): void {
 		// Map creation
 		this.map = Leaflet.map('map', {
-		center: [-5.131637, -80.001841],
+			center: [-5.131637, -80.001841],
 			zoom: 14
 		});
 
@@ -63,14 +63,17 @@ export class MapComponent implements AfterViewInit {
 	public drawPolygon(event): void {
 
 		const layer = event.layer;
-		this.drawItems.addLayer(layer);
-		
-		const shape = layer.toGeoJSON();
-		const area = Leaflet.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
 
-		//Visualize area
-		console.log("Area");
-		console.log((area / 10000).toFixed(2) + " Hectarias");
+		
+		this.drawItems.addLayer(layer);
+		const id : number = this.drawItems.getLayerId(layer);
+
+		const area: number = Leaflet.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+		this.drawItems.getLayer(id).bindPopup(this.makePopUp(area)).openPopup();
+
+		const shape = layer.toGeoJSON();
+		
+		console.log(shape.geometry.coordinates[0]);
 
 		//Send data
 	}
@@ -102,6 +105,12 @@ export class MapComponent implements AfterViewInit {
 
 		return Leaflet.latLngBounds(southWest, northEast);
 
+	}
+
+	public makePopUp(area: number): string {
+		return `` +
+			`<input>` +
+			`<div>Name: ${(area/10000).toFixed(2)} Hectareas</div> `
 	}
 
 	public isPointInsidePolygon(point: Array<number>, polyPoints: Array<Array<number>>): Boolean {
