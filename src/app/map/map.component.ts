@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as Leaflet from "leaflet";
 import { Store } from '@ngxs/store';
 import { PolygonActions } from '../store/polygon/polygon.actions';
+import { MakerService } from '../services/maker/maker.service';
 
 @Component({
 	selector: 'app-map',
@@ -12,7 +13,7 @@ export class MapComponent implements AfterViewInit {
 	public map: Leaflet.DrawMap;
 	public drawItems: Leaflet.FeatureGroup;
 
-	constructor(private readonly store: Store) { }
+	constructor(private readonly store: Store, private readonly makerService: MakerService) { }
 
 	ngAfterViewInit(): void {
 		this.initMap();
@@ -30,7 +31,7 @@ export class MapComponent implements AfterViewInit {
 			subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
 		});
 
-		
+
 
 		let baseMaps = {
 			"openStreetMap": tiles,
@@ -73,61 +74,8 @@ export class MapComponent implements AfterViewInit {
 		this.map.addControl(drawControl);
 
 		this.map.on(Leaflet.Draw.Event.CREATED, (event) => {
-			this.drawPolygon(event);
+			this.makerService.makePolygon(this.map, this.drawItems, event);
 		});
-	}
-
-
-	public drawPolygon(event): void {
-
-		const layer = event.layer;
-
-		this.drawItems.addLayer(layer);
-		const id: number = this.drawItems.getLayerId(layer);
-
-		const area: number = Leaflet.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-		this.drawItems.getLayer(id).bindPopup(this.makePopUp(area)).openPopup();
-
-		const shape = layer.toGeoJSON();
-
-		//Send data
-		this.store.dispatch([new PolygonActions.SetProperty({ coordinates: shape.geometry.coordinates[0] })]);
-
-
-	}
-
-	public drawImage(imgUrl: string, coordinates: any): void {
-
-		const imgCoordinates = this.getCoordinatesImage(coordinates);
-		Leaflet.imageOverlay(imgUrl, imgCoordinates).addTo(this.map);
-		//Move towards the image
-		//this.map.fitBounds()
-	}
-
-	public getCoordinatesImage(coordinates: Array<Array<number>>): Leaflet.LatLngBounds {
-
-		let lonMin: number = coordinates[0][0];
-		let lonMax: number = coordinates[0][0];
-		let latMin: number = coordinates[0][1];
-		let latMax: number = coordinates[0][1];
-
-		coordinates.forEach((coordinate) => {
-			lonMax = Math.max(lonMax, coordinate[0]);
-			lonMin = Math.min(lonMin, coordinate[0]);
-			latMax = Math.max(latMax, coordinate[1]);
-			latMin = Math.min(latMin, coordinate[1]);
-		});
-
-		const southWest = Leaflet.latLng(lonMax, latMax);
-		const northEast = Leaflet.latLng(lonMin, latMin);
-
-		return Leaflet.latLngBounds(southWest, northEast);
-
-	}
-
-	public makePopUp(area: number): string {
-		return `` +
-			`<div>Area: ${(area / 10000).toFixed(2)} Hectareas</div> `
 	}
 
 	public isPointInsidePolygon(point: Array<number>, polyPoints: Array<Array<number>>): Boolean {
