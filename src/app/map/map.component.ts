@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as Leaflet from "leaflet";
+import { Store } from '@ngxs/store';
+import { PolygonActions } from '../store/polygon/polygon.actions';
 
 @Component({
 	selector: 'app-map',
@@ -10,7 +12,7 @@ export class MapComponent implements AfterViewInit {
 	public map: Leaflet.DrawMap;
 	public drawItems: Leaflet.FeatureGroup;
 
-	constructor() { }
+	constructor(private readonly store: Store) { }
 
 	ngAfterViewInit(): void {
 		this.initMap();
@@ -64,18 +66,21 @@ export class MapComponent implements AfterViewInit {
 
 		const layer = event.layer;
 
-		
+
 		this.drawItems.addLayer(layer);
-		const id : number = this.drawItems.getLayerId(layer);
+		const id: number = this.drawItems.getLayerId(layer);
 
 		const area: number = Leaflet.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
 		this.drawItems.getLayer(id).bindPopup(this.makePopUp(area)).openPopup();
 
 		const shape = layer.toGeoJSON();
-		
+
 		console.log(shape.geometry.coordinates[0]);
 
 		//Send data
+		this.store.dispatch([new PolygonActions.SetProperty({ coordinates: shape.geometry.coordinates[0] })]);
+		
+
 	}
 
 	public drawImage(imgUrl: string, coordinates: any): void {
@@ -110,7 +115,7 @@ export class MapComponent implements AfterViewInit {
 	public makePopUp(area: number): string {
 		return `` +
 			`<input>` +
-			`<div>Name: ${(area/10000).toFixed(2)} Hectareas</div> `
+			`<div>Name: ${(area / 10000).toFixed(2)} Hectareas</div> `
 	}
 
 	public isPointInsidePolygon(point: Array<number>, polyPoints: Array<Array<number>>): Boolean {
