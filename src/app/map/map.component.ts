@@ -19,18 +19,34 @@ export class MapComponent implements AfterViewInit {
 	}
 
 	public initMap(): void {
-		// Map creation
-		this.map = Leaflet.map('map', {
-			center: [-5.131637, -80.001841],
-			zoom: 14
-		});
-
 		// Map layers
 		const tiles = Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 19,
 			attribution: "Gracias OpenStreetMap :3"
 		})
-		tiles.addTo(this.map);
+
+		const satelliteMap = Leaflet.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+			maxZoom: 20,
+			subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+		});
+
+		
+
+		let baseMaps = {
+			"openStreetMap": tiles,
+			"satelliteMap": satelliteMap
+		};
+
+		// Map creation
+		this.map = Leaflet.map('map', {
+			center: [-5.131637, -80.001841],
+			zoom: 14,
+			layers: [tiles, satelliteMap]
+		});
+
+		//satelliteMap.addTo(this.map);
+
+		Leaflet.control.layers(baseMaps).addTo(this.map);
 
 		this.drawItems = new Leaflet.FeatureGroup();
 		this.map.addLayer(this.drawItems);
@@ -66,7 +82,6 @@ export class MapComponent implements AfterViewInit {
 
 		const layer = event.layer;
 
-
 		this.drawItems.addLayer(layer);
 		const id: number = this.drawItems.getLayerId(layer);
 
@@ -75,11 +90,9 @@ export class MapComponent implements AfterViewInit {
 
 		const shape = layer.toGeoJSON();
 
-		console.log(shape.geometry.coordinates[0]);
-
 		//Send data
 		this.store.dispatch([new PolygonActions.SetProperty({ coordinates: shape.geometry.coordinates[0] })]);
-		
+
 
 	}
 
@@ -114,8 +127,7 @@ export class MapComponent implements AfterViewInit {
 
 	public makePopUp(area: number): string {
 		return `` +
-			`<input>` +
-			`<div>Name: ${(area / 10000).toFixed(2)} Hectareas</div> `
+			`<div>Area: ${(area / 10000).toFixed(2)} Hectareas</div> `
 	}
 
 	public isPointInsidePolygon(point: Array<number>, polyPoints: Array<Array<number>>): Boolean {
