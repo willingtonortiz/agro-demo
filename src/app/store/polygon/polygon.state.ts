@@ -7,6 +7,7 @@ export interface PolygonStateModel {
 	agroApiId: string;
 	name: string;
 	coordinates: Array<any>;
+	area: number;
 };
 
 @State<PolygonStateModel>({
@@ -16,6 +17,7 @@ export interface PolygonStateModel {
 		name: "",
 		coordinates: [],
 		agroApiId: "",
+		area: 0,
 	}
 })
 export class PolygonState {
@@ -25,14 +27,75 @@ export class PolygonState {
 
 	@Action(PolygonActions.SetProperty)
 	public setProperty({ patchState, }: StateContext<PolygonStateModel>, { properties }: PolygonActions.SetProperty) {
-		console.log(properties);
 		patchState({
 			...properties
 		});
 	}
 
 	@Action(PolygonActions.CreatePolygon)
-	createPolygon({ getState }: StateContext<PolygonStateModel>, { }: PolygonActions.CreatePolygon) {
-		console.log(getState());
+	public async createPolygon({ getState }: StateContext<PolygonStateModel>) {
+		try {
+
+			const polygon = getState();
+
+			const geoJson = JSON.stringify({
+				type: "Feature",
+				properties: {},
+				geometry: {
+					type: "Polygon",
+					coordinates: [polygon.coordinates]
+				}
+			});
+
+			const data = await this.agroApiHttpService.createPolygon(polygon.name, geoJson);
+			console.log(data);
+
+		} catch (error) {
+			console.log(`[ERROR] ${PolygonActions.CreatePolygon.type}`);
+		}
 	}
 }
+
+/*
+{
+        "type":"Feature",
+        "properties":{
+
+        },
+        "geometry":{
+            "type":"Polygon",
+            "coordinates":[
+                [
+                    [
+                        -439.975689,
+                        -5.220767
+                    ],
+                    [
+                        -439.974423,
+                        -5.221681
+                    ],
+                    [
+                        -439.973618,
+                        -5.220383
+                    ],
+                    [
+                        -439.973205,
+                        -5.219646
+                    ],
+                    [
+                        -439.973854,
+                        -5.219865
+                    ],
+                    [
+                        -439.974208,
+                        -5.21987
+                    ],
+                    [
+                        -439.975689,
+                        -5.220767
+                    ]
+                ]
+            ]
+        }
+    }
+*/
