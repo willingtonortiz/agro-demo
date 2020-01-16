@@ -9,7 +9,7 @@ export class AgroApiHttpService {
 	constructor(private readonly httpClient: HttpClient) {
 	}
 
-	public async createPolygon(name: string, geoJson: string) {
+	public async createPolygon(name: string, geoJson: string): Promise<any> {
 
 		try {
 
@@ -18,20 +18,21 @@ export class AgroApiHttpService {
 				geo_json: geoJson
 			}).toPromise();
 
-			console.log(`Polygon id: ${response.id}`)
+			return response.id
 
 		} catch (error) {
 			console.log("ERROR EN AGROAPI [CREATE POLYGON]");
+			return null;
 		}
 	}
 
 	public async findAllPolygons() {
 		try {
 			const response: any = await this.httpClient.get('http://api.agromonitoring.com/agro/1.0/polygons?appid=9d411dc6b0e4cc020bd8b3b2e4ef69cc').toPromise();
-			console.log(response);
+			return response;
 		} catch (error) {
-
 			console.log("ERROR EN AGROAPI [FINDALL POLYGONS]");
+			return null;
 		}
 	}
 
@@ -39,15 +40,16 @@ export class AgroApiHttpService {
 		try {
 			const startDate = 0;
 			const endDate = Date.now();
-			const apiKey = "";
+			const apiKey = "9d411dc6b0e4cc020bd8b3b2e4ef69cc";
 
 			const response: any = await this.httpClient.get(`http://api.agromonitoring.com/agro/1.0/image/search?start=${startDate}&end=${endDate}&polyid=${polygonId}&appid=${apiKey}`).toPromise();
 
 			console.log(response);
 			console.log(JSON.stringify(response));
+			return response;
 		} catch (error) {
-
-			console.log("ERROR EN AGROAPI [FINDALL POLYGONS]");
+			console.log("ERROR EN AGROAPI [GET POLYGON INFO]");
+			return null;
 		}
 	}
 }
