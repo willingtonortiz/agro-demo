@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AgroApiHttpService {
 
-	constructor(public httpClient: HttpClient) {
+	constructor(private readonly httpClient: HttpClient) {
 	}
 
 	public async createPolygon(name: string, geoJson: string) {

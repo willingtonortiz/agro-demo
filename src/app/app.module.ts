@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MapComponent } from './map/map.component';
 import { PolygonFormComponent } from './polygon-form/polygon-form.component';
+import { PolygonState } from './store/polygon/polygon.state';
 
 @NgModule({
 	declarations: [
@@ -25,8 +26,9 @@ import { PolygonFormComponent } from './polygon-form/polygon-form.component';
 		LeafletDrawModule.forRoot(),
 		HttpClientModule,
 		ReactiveFormsModule,
-		// NgxsModule.forRoot([ZooState])
-		// NgxsReduxDevtoolsPluginModule.forRoot()
+
+		NgxsModule.forRoot([PolygonState]),
+		NgxsReduxDevtoolsPluginModule.forRoot()
 	],
 	providers: [],
 	bootstrap: [AppComponent]

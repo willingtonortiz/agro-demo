@@ -1,22 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { Store } from '@ngxs/store';
+import { PolygonActions } from '../store/polygon/polygon.actions';
 
 @Component({
 	selector: 'app-polygon-form',
 	templateUrl: './polygon-form.component.html',
 	styleUrls: ['./polygon-form.component.scss']
 })
-export class PolygonFormComponent implements OnInit {
+export class PolygonFormComponent {
 
 	public polygonForm: FormGroup;
 
-	constructor(private formBuilder: FormBuilder) {
+	constructor(private formBuilder: FormBuilder, private store: Store) {
 		this.polygonForm = this.formBuilder.group({
 			name: ["", [Validators.required]]
 		});
 	}
 
-	ngOnInit() {
+	public printInfo() {
+		this.store.dispatch([new PolygonActions.SetProperty({ name: this.fName.value })]);
+		this.store.dispatch([new PolygonActions.CreatePolygon()]);
 	}
 
+	public get fName(): AbstractControl {
+		return this.polygonForm.get("name");
+	}
 }
