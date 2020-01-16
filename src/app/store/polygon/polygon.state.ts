@@ -8,6 +8,7 @@ export interface PolygonStateModel {
 	name: string;
 	coordinates: Array<any>;
 	area: number;
+	center: Array<any>;
 };
 
 @State<PolygonStateModel>({
@@ -18,6 +19,7 @@ export interface PolygonStateModel {
 		coordinates: [],
 		agroApiId: "",
 		area: 0,
+		center: []
 	}
 })
 export class PolygonState {
@@ -33,22 +35,27 @@ export class PolygonState {
 	}
 
 	@Action(PolygonActions.CreatePolygon)
-	public async createPolygon({ getState }: StateContext<PolygonStateModel>) {
+	public async createPolygon({ getState, patchState }: StateContext<PolygonStateModel>) {
+		const polygon = getState();
+
+		const geoJson = {
+			type: "Feature",
+			properties: {},
+			geometry: {
+				type: "Polygon",
+				coordinates: [polygon.coordinates]
+			}
+		};
+
 		try {
-
-			const polygon = getState();
-
-			const geoJson = JSON.stringify({
-				type: "Feature",
-				properties: {},
-				geometry: {
-					type: "Polygon",
-					coordinates: [polygon.coordinates]
-				}
-			});
-
 			const data = await this.agroApiHttpService.createPolygon(polygon.name, geoJson);
+
 			console.log(data);
+			patchState({
+				id: data.id,
+				area: data.area,
+				center: data.center
+			});
 
 		} catch (error) {
 			console.log(`[ERROR] ${PolygonActions.CreatePolygon.type}`);
@@ -56,8 +63,16 @@ export class PolygonState {
 	}
 
 	@Action(PolygonActions.FetchPolygonInfo)
-	public async fetchPolygonInfo({ }: StateContext<PolygonStateModel>) {
+	public async fetchPolygonInfo({ getState }: StateContext<PolygonStateModel>) {
+		const { id } = getState();
 
+		try {
+			const information = await this.agroApiHttpService.getPolygonInfo(id);
+
+			console.log(information);
+		} catch (error) {
+			console.log(`[ERROR] ${PolygonActions.FetchPolygonInfo.type}`);
+		}
 	}
 }
 

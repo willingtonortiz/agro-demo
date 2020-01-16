@@ -1,6 +1,11 @@
 <form [formGroup]="polygonForm">
+	<label>Id del poligono</label>
+	<input type="text" formControlName="id">
+	<button (click)="setPolygonId()">Set Id</button>
+	<button (click)="fetchInfo()">Fetch Info</button>
+
+
 	<label>Nombre del polygono</label>
 	<input type="text" formControlName="name">
-
 	<button (click)="printInfo()">Set name</button>
 </form>

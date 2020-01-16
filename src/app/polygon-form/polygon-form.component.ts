@@ -14,7 +14,8 @@ export class PolygonFormComponent {
 
 	constructor(private formBuilder: FormBuilder, private store: Store) {
 		this.polygonForm = this.formBuilder.group({
-			name: ["", [Validators.required]]
+			id: [""],
+			name: [""],
 		});
 	}
 
@@ -23,7 +24,19 @@ export class PolygonFormComponent {
 		this.store.dispatch([new PolygonActions.CreatePolygon()]);
 	}
 
+	public setPolygonId() {
+		this.store.dispatch([new PolygonActions.SetProperty({ id: this.fId.value })]);
+	}
+
+	public fetchInfo() {
+		this.store.dispatch([new PolygonActions.FetchPolygonInfo()]);
+	}
+
 	public get fName(): AbstractControl {
 		return this.polygonForm.get("name");
+	}
+
+	public get fId(): AbstractControl {
+		return this.polygonForm.get("id");
 	}
 }
