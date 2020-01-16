@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as Leaflet from "leaflet";
 import { Store } from '@ngxs/store';
-import { PolygonActions } from '../store/polygon/polygon.actions';
-import { MakerService } from '../services/maker/maker.service';
+import { PolygonActions } from '../../../../store/polygon/polygon.actions';
+import { MakerService } from 'src/app/services/maker/maker.service';
 
 @Component({
 	selector: 'app-map',

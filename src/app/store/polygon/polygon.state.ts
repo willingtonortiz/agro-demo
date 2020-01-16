@@ -1,7 +1,8 @@
-import { State, Action, StateContext } from "@ngxs/store";
+import { State, Action, StateContext, Selector } from "@ngxs/store";
 import { PolygonActions } from './polygon.actions';
 import { AgroApiHttpService } from 'src/app/services/agro-api-http.service';
 import { MakerService } from 'src/app/services/maker/maker.service';
+import { HttpClient } from '@angular/common/http';
 
 export interface PolygonStateModel {
 	id: string;
@@ -10,6 +11,9 @@ export interface PolygonStateModel {
 	coordinates: Array<any>;
 	area: number;
 	center: Array<any>;
+	polygonInfo: Array<any>;
+	graphData: Array<any>;
+	polygonImages: Array<any>;
 };
 
 @State<PolygonStateModel>({
@@ -20,13 +24,27 @@ export interface PolygonStateModel {
 		coordinates: [],
 		agroApiId: "",
 		area: 0,
-		center: []
+		center: [],
+		polygonInfo: [],
+		graphData: [],
+		polygonImages: []
 	}
 })
 
 export class PolygonState {
 
-	public constructor(private readonly agroApiHttpService: AgroApiHttpService, private makerService: MakerService) {
+	public constructor(
+		private readonly agroApiHttpService: AgroApiHttpService,
+		private readonly httpClient: HttpClient,
+		private makerService: MakerService
+	) { }
+
+	@Selector()
+	static pandas({ getState }: StateContext<PolygonStateModel>) {
+		const { polygonInfo } = getState();
+		const stats: Array<any> = polygonInfo.map((item) => {
+
+		});
 	}
 
 	@Action(PolygonActions.SetProperty)
@@ -65,14 +83,34 @@ export class PolygonState {
 	}
 
 	@Action(PolygonActions.FetchPolygonInfo)
-	public async fetchPolygonInfo({ getState }: StateContext<PolygonStateModel>) {
+	public async fetchPolygonInfo({ getState, patchState, dispatch }: StateContext<PolygonStateModel>) {
 		const { id } = getState();
 		
 		const polygon = getState();
 		try {
-			const information = await this.agroApiHttpService.getPolygonInfo(id);
-			this.makerService.drawImage(information[0].image.truecolor,polygon.coordinates);
-			//console.log(information[0].image.truecolor);
+			const information: Array<any> = await this.agroApiHttpService.getPolygonInfo(id);
+			this.makerService.drawImage(information[0].tile.ndvi,polygon.coordinates);
+			/*const ndviInfo = [];
+			const polygonImages = [];
+
+			for (let i = 0; i < information.length; ++i) {
+				try {
+					polygonImages.push(information[i].tiles.ndvi);
+					const data = await this.httpClient.get(information[i].stats.ndvi).toPromise();
+					ndviInfo.push(data);
+				} catch (error) {
+					console.log("ERROR");
+				}
+			}
+
+			console.log(ndviInfo);
+
+			patchState({
+				polygonInfo: information,
+				graphData: ndviInfo,
+				polygonImages
+			});*/
+
 		} catch (error) {
 			console.log(`[ERROR] ${PolygonActions.FetchPolygonInfo.type}`);
 		}

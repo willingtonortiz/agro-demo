@@ -22,12 +22,12 @@ export class MakerService {
     drawItems.getLayer(id).bindPopup(this.makePopUp(area)).openPopup();
 
     const shape = layer.toGeoJSON();
-    
+
     var coordinates = shape.geometry.coordinates[0];
 
     //Send data
     await this.store.dispatch([new PolygonActions.SetProperty({ coordinates: shape.geometry.coordinates[0] })]).toPromise();
-    
+
   }
 
   private makePopUp(area: number): string {
@@ -38,7 +38,12 @@ export class MakerService {
   public drawImage(imgUrl: string, coordinates: any): void {
 
     const imgCoordinates = this.getCoordinatesImage(coordinates);
-    Leaflet.imageOverlay(imgUrl, imgCoordinates).addTo(this.mapT)
+    
+    //IMAGES
+    //Leaflet.imageOverlay(imgUrl, imgCoordinates).addTo(this.mapT)
+    Leaflet.tileLayer(imgUrl, { maxZoom: 19 }).addTo(this.mapT).bringToFront();
+    
+
     //Move towards the image
     this.mapT.fitBounds(imgCoordinates);
   }
