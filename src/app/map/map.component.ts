@@ -19,7 +19,7 @@ export class MapComponent implements AfterViewInit {
 	public initMap(): void {
 		// Map creation
 		this.map = Leaflet.map('map', {
-			center: [-5.131637, -80.001841],
+		center: [-5.131637, -80.001841],
 			zoom: 14
 		});
 
@@ -64,11 +64,9 @@ export class MapComponent implements AfterViewInit {
 
 		const layer = event.layer;
 		this.drawItems.addLayer(layer);
-
+		
 		const shape = layer.toGeoJSON();
 		const area = Leaflet.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-
-		console.log(shape.geometry.coordinates[0]);
 
 		//Visualize area
 		console.log("Area");
