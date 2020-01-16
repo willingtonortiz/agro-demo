@@ -1,6 +1,7 @@
 import { State, Action, StateContext, Selector } from "@ngxs/store";
 import { PolygonActions } from './polygon.actions';
 import { AgroApiHttpService } from 'src/app/services/agro-api-http.service';
+import { MakerService } from 'src/app/services/maker/maker.service';
 import { HttpClient } from '@angular/common/http';
 
 export interface PolygonStateModel {
@@ -29,11 +30,13 @@ export interface PolygonStateModel {
 		polygonImages: []
 	}
 })
+
 export class PolygonState {
 
 	public constructor(
 		private readonly agroApiHttpService: AgroApiHttpService,
-		private readonly httpClient: HttpClient
+		private readonly httpClient: HttpClient,
+		private makerService: MakerService
 	) { }
 
 	@Selector()
@@ -82,16 +85,17 @@ export class PolygonState {
 	@Action(PolygonActions.FetchPolygonInfo)
 	public async fetchPolygonInfo({ getState, patchState, dispatch }: StateContext<PolygonStateModel>) {
 		const { id } = getState();
-
+		
+		const polygon = getState();
 		try {
 			const information: Array<any> = await this.agroApiHttpService.getPolygonInfo(id);
-
-			const ndviInfo = [];
+			this.makerService.drawImage(information[0].tile.ndvi,polygon.coordinates);
+			/*const ndviInfo = [];
 			const polygonImages = [];
 
 			for (let i = 0; i < information.length; ++i) {
 				try {
-					polygonImages.push(information[i].image.truecolor);
+					polygonImages.push(information[i].tiles.ndvi);
 					const data = await this.httpClient.get(information[i].stats.ndvi).toPromise();
 					ndviInfo.push(data);
 				} catch (error) {
@@ -105,54 +109,10 @@ export class PolygonState {
 				polygonInfo: information,
 				graphData: ndviInfo,
 				polygonImages
-			});
+			});*/
 
 		} catch (error) {
 			console.log(`[ERROR] ${PolygonActions.FetchPolygonInfo.type}`);
 		}
 	}
 }
-
-/*
-{
-        "type":"Feature",
-        "properties":{
-
-        },
-        "geometry":{
-            "type":"Polygon",
-            "coordinates":[
-                [
-                    [
-                        -439.975689,
-                        -5.220767
-                    ],
-                    [
-                        -439.974423,
-                        -5.221681
-                    ],
-                    [
-                        -439.973618,
-                        -5.220383
-                    ],
-                    [
-                        -439.973205,
-                        -5.219646
-                    ],
-                    [
-                        -439.973854,
-                        -5.219865
-                    ],
-                    [
-                        -439.974208,
-                        -5.21987
-                    ],
-                    [
-                        -439.975689,
-                        -5.220767
-                    ]
-                ]
-            ]
-        }
-    }
-*/
