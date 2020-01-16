@@ -40,14 +40,15 @@ export class MapComponent implements AfterViewInit {
 
 		// Map creation
 		this.map = Leaflet.map('map', {
-			center: [-5.131637, -80.001841],
-			zoom: 14,
+			center: [-5.219646, -79.975689],
+			zoom: 20,
 			layers: [tiles, satelliteMap]
 		});
 
 		//satelliteMap.addTo(this.map);
 
 		Leaflet.control.layers(baseMaps).addTo(this.map);
+
 
 		this.drawItems = new Leaflet.FeatureGroup();
 		this.map.addLayer(this.drawItems);
@@ -76,6 +77,14 @@ export class MapComponent implements AfterViewInit {
 		this.map.on(Leaflet.Draw.Event.CREATED, (event) => {
 			this.makerService.makePolygon(this.map, this.drawItems, event);
 		});
+
+		/*var imageUrl = 'http://api.agromonitoring.com/image/1.0/1205d40da00/5e1f706a4fcefd6d32f91021?appid=9d411dc6b0e4cc020bd8b3b2e4ef69cc';
+		const southWest = Leaflet.latLng(-5.219646, -79.975689);
+		const northEast = Leaflet.latLng(-5.221681, -79.973205);
+
+		var imageBounds = Leaflet.latLngBounds(southWest, northEast);
+		var lyrTest = Leaflet.imageOverlay(imageUrl, imageBounds).addTo(this.map);
+		this.map.fitBounds(imageBounds);*/
 	}
 
 	public isPointInsidePolygon(point: Array<number>, polyPoints: Array<Array<number>>): Boolean {

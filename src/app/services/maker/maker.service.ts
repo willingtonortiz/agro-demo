@@ -8,9 +8,11 @@ import { PolygonActions } from 'src/app/store/polygon/polygon.actions';
 })
 export class MakerService {
 
+  private mapT: Leaflet.DrawMap;
   constructor(private readonly store: Store) { }
 
-  public makePolygon(map: Leaflet.DrawMap, drawItems: Leaflet.FeatureGroup, event): void {
+  public async makePolygon(map: Leaflet.DrawMap, drawItems: Leaflet.FeatureGroup, event): Promise<void> {
+    this.mapT = map;
     const layer = event.layer;
 
     drawItems.addLayer(layer);
@@ -20,9 +22,12 @@ export class MakerService {
     drawItems.getLayer(id).bindPopup(this.makePopUp(area)).openPopup();
 
     const shape = layer.toGeoJSON();
+    
+    var coordinates = shape.geometry.coordinates[0];
 
     //Send data
-    this.store.dispatch([new PolygonActions.SetProperty({ coordinates: shape.geometry.coordinates[0] })]);
+    await this.store.dispatch([new PolygonActions.SetProperty({ coordinates: shape.geometry.coordinates[0] })]).toPromise();
+    
   }
 
   private makePopUp(area: number): string {
@@ -30,12 +35,12 @@ export class MakerService {
       `<div>Area: ${(area / 10000).toFixed(2)} Hectareas</div> `
   }
 
-  public drawImage(imgUrl: string, coordinates: any, map: Leaflet.DrawMap): void {
+  public drawImage(imgUrl: string, coordinates: any): void {
 
     const imgCoordinates = this.getCoordinatesImage(coordinates);
-    Leaflet.imageOverlay(imgUrl, imgCoordinates).addTo(map);
+    Leaflet.imageOverlay(imgUrl, imgCoordinates).addTo(this.mapT)
     //Move towards the image
-    //this.map.fitBounds()
+    this.mapT.fitBounds(imgCoordinates);
   }
 
   private getCoordinatesImage(coordinates: Array<Array<number>>): Leaflet.LatLngBounds {
@@ -52,8 +57,8 @@ export class MakerService {
       latMin = Math.min(latMin, coordinate[1]);
     });
 
-    const southWest = Leaflet.latLng(lonMax, latMax);
-    const northEast = Leaflet.latLng(lonMin, latMin);
+    const southWest = Leaflet.latLng(latMax, lonMax);
+    const northEast = Leaflet.latLng(latMin, lonMin);
 
     return Leaflet.latLngBounds(southWest, northEast);
 

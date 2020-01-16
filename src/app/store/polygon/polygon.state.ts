@@ -1,6 +1,7 @@
 import { State, Action, StateContext } from "@ngxs/store";
 import { PolygonActions } from './polygon.actions';
 import { AgroApiHttpService } from 'src/app/services/agro-api-http.service';
+import { MakerService } from 'src/app/services/maker/maker.service';
 
 export interface PolygonStateModel {
 	id: string;
@@ -22,9 +23,10 @@ export interface PolygonStateModel {
 		center: []
 	}
 })
+
 export class PolygonState {
 
-	public constructor(private readonly agroApiHttpService: AgroApiHttpService) {
+	public constructor(private readonly agroApiHttpService: AgroApiHttpService, private makerService: MakerService) {
 	}
 
 	@Action(PolygonActions.SetProperty)
@@ -65,57 +67,14 @@ export class PolygonState {
 	@Action(PolygonActions.FetchPolygonInfo)
 	public async fetchPolygonInfo({ getState }: StateContext<PolygonStateModel>) {
 		const { id } = getState();
-
+		
+		const polygon = getState();
 		try {
 			const information = await this.agroApiHttpService.getPolygonInfo(id);
-
-			console.log(information);
+			this.makerService.drawImage(information[0].image.truecolor,polygon.coordinates);
+			//console.log(information[0].image.truecolor);
 		} catch (error) {
 			console.log(`[ERROR] ${PolygonActions.FetchPolygonInfo.type}`);
 		}
 	}
 }
-
-/*
-{
-        "type":"Feature",
-        "properties":{
-
-        },
-        "geometry":{
-            "type":"Polygon",
-            "coordinates":[
-                [
-                    [
-                        -439.975689,
-                        -5.220767
-                    ],
-                    [
-                        -439.974423,
-                        -5.221681
-                    ],
-                    [
-                        -439.973618,
-                        -5.220383
-                    ],
-                    [
-                        -439.973205,
-                        -5.219646
-                    ],
-                    [
-                        -439.973854,
-                        -5.219865
-                    ],
-                    [
-                        -439.974208,
-                        -5.21987
-                    ],
-                    [
-                        -439.975689,
-                        -5.220767
-                    ]
-                ]
-            ]
-        }
-    }
-*/
