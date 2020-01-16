@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as Leaflet from "leaflet";
 import { Store } from '@ngxs/store';
-import { PolygonActions } from '../store/polygon/polygon.actions';
+import { PolygonActions } from '../../../../store/polygon/polygon.actions';
 
 @Component({
 	selector: 'app-map',
@@ -79,7 +79,7 @@ export class MapComponent implements AfterViewInit {
 
 		//Send data
 		this.store.dispatch([new PolygonActions.SetProperty({ coordinates: shape.geometry.coordinates[0] })]);
-		
+
 
 	}
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { PolygonActions } from '../store/polygon/polygon.actions';
+import { PolygonActions } from '../../../../store/polygon/polygon.actions';
 
 @Component({
 	selector: 'app-polygon-form',
