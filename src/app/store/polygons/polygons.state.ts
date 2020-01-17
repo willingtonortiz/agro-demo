@@ -93,7 +93,9 @@ export class PolygonsState implements NgxsOnInit {
 
 		try {
 			let information: Array<any> = await this.agroApiHttpService.getPolygonInfo(current.agroApiId);
-			information = information.slice(0, 4);
+
+			information.sort((a: any, b: any) => b.dt - a.dt);
+			information = information.slice(0, 5);
 
 			const newPolygons = polygons.map(item => {
 				if (item.agroApiId === current.agroApiId) {
