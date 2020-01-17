@@ -21,12 +21,12 @@ export class PolygonItemComponent implements OnInit {
 
 	public selectPolygon() {
 		this.store.dispatch([new PolygonsActions.SetCurrentPolygon(this.polygon.agroApiId)])
+		this.makerService.drawPolygon(this.polygon.coordinates,this.polygon.area);
 		console.log(this.polygon);
 	}
 
 	public fetchPolygonInfo() {
 		this.store.dispatch([new PolygonsActions.FetchCurrentPolygonInfo()]);
-		this.makerService.drawPolygon(this.polygon.coordinates,this.polygon.area);
 		console.log("Clicked");
 	}
 }

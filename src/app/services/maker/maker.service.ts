@@ -32,6 +32,7 @@ export class MakerService {
   }
 
   public drawPolygon(coordinates: Array<Array<number>>, area: number): void {
+    console.log("llegue");
     this.drawItems.clearLayers();
 
     let lCoordinates: Array<Leaflet.LatLngExpression>;
