@@ -8,26 +8,47 @@ import { PolygonActions } from 'src/app/store/polygon/polygon.actions';
 })
 export class MakerService {
 
-  private mapT: Leaflet.DrawMap;
+  private map: Leaflet.DrawMap;
+  private drawItems: Leaflet.FeatureGroup;
   constructor(private readonly store: Store) { }
 
-  public async makePolygon(map: Leaflet.DrawMap, drawItems: Leaflet.FeatureGroup, event): Promise<void> {
-    this.mapT = map;
+  public async makePolygon(event): Promise<void> {
     const layer = event.layer;
 
-    drawItems.addLayer(layer);
-    const id: number = drawItems.getLayerId(layer);
+    this.drawItems.addLayer(layer);
+    const id: number = this.drawItems.getLayerId(layer);
 
     const area: number = Leaflet.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-    drawItems.getLayer(id).bindPopup(this.makePopUp(area)).openPopup();
+    this.drawItems.getLayer(id).bindPopup(this.makePopUp(area)).openPopup();
 
     const shape = layer.toGeoJSON();
 
     var coordinates = shape.geometry.coordinates[0];
 
     //Send data
-    await this.store.dispatch([new PolygonActions.SetProperty({ coordinates: shape.geometry.coordinates[0] })]).toPromise();
+    await this.store.dispatch([new PolygonActions.SetProperty({ coordinates: coordinates })]).toPromise();
 
+  }
+
+  public drawPolygon(coordinates: Array<Array<number>>): void {
+
+    this.drawItems.clearLayers();
+
+    let lCoordinates: Array<Leaflet.LatLngExpression> = new Array<Leaflet.LatLngExpression>();
+    coordinates.forEach(cnd => {
+      lCoordinates.push(Leaflet.latLng(cnd[1], cnd[0]));
+    });
+    
+    let polygon = Leaflet.polygon(lCoordinates, { color: 'rgba(0,0,0,1)', fillColor: 'red' });
+    this.drawItems.addLayer(polygon);
+   
+    /*const id: number = this.drawItems.getLayerId(polygon);
+
+    const area: number = Leaflet.GeometryUtil.geodesicArea();
+    this.drawItems.getLayer(id).bindPopup(this.makePopUp(area)).openPopup();*/
+
+    const lCenter = this.getCoordinatesImage(coordinates);
+    this.map.fitBounds(lCenter);
   }
 
   private makePopUp(area: number): string {
@@ -38,14 +59,14 @@ export class MakerService {
   public drawImage(imgUrl: string, coordinates: any): void {
 
     const imgCoordinates = this.getCoordinatesImage(coordinates);
-    
+
     //IMAGES
-    //Leaflet.imageOverlay(imgUrl, imgCoordinates).addTo(this.mapT)
-    Leaflet.tileLayer(imgUrl, { maxZoom: 19 }).addTo(this.mapT).bringToFront();
-    
+    //Leaflet.imageOverlay(imgUrl, imgCoordinates).addTo(this.map)
+    Leaflet.tileLayer(imgUrl, { maxZoom: 19 }).addTo(this.map).bringToFront();
+
 
     //Move towards the image
-    this.mapT.fitBounds(imgCoordinates);
+    this.map.fitBounds(imgCoordinates);
   }
 
   private getCoordinatesImage(coordinates: Array<Array<number>>): Leaflet.LatLngBounds {
@@ -67,6 +88,14 @@ export class MakerService {
 
     return Leaflet.latLngBounds(southWest, northEast);
 
+  }
+
+  public setMap(map: Leaflet.DrawMap): void {
+    this.map = map;
+  }
+
+  public setDrawItems(drawItems: Leaflet.FeatureGroup): void {
+    this.drawItems = drawItems;
   }
 
 }
