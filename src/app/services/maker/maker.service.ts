@@ -43,7 +43,7 @@ export class MakerService {
 
     let perimeter: number = this.getPerimeter(llCoordinates);
 
-    let polygon = Leaflet.polygon(lCoordinates, { color: 'rgba(0,0,0,1)', fillColor: 'red' });
+    let polygon = Leaflet.polygon(lCoordinates, { color: 'rgba(255,255,255,1)', fillColor: 'white' });
     this.drawItems.addLayer(polygon);
 
     const id: number = this.drawItems.getLayerId(polygon);
