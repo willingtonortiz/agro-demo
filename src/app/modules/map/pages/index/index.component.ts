@@ -11,7 +11,7 @@ import { PolygonsState, Polygon } from 'src/app/store/polygons/polygons.state';
 })
 export class IndexComponent implements OnInit {
 
-	@Select(state => state.AppPolygons.polygons) polygons$: Observable<Polygon[]>;
+	@Select(PolygonsState.findAllPolygons) polygons$: Observable<Polygon[]>;
 	// public polygons$: Observable<any>;
 	public polygons: Array<any>;
 

@@ -9,10 +9,11 @@ import { MapComponent } from './components/map/map.component';
 import { PolygonFormComponent } from './components/polygon-form/polygon-form.component';
 import { PolygonListComponent } from './components/polygon-list/polygon-list.component';
 import { PolygonItemComponent } from './components/polygon-item/polygon-item.component';
+import { StatisticsComponent } from './components/statistics/statistics.component';
 
 
 @NgModule({
-	declarations: [IndexComponent, MapComponent, PolygonFormComponent, PolygonListComponent, PolygonItemComponent],
+	declarations: [IndexComponent, MapComponent, PolygonFormComponent, PolygonListComponent, PolygonItemComponent, StatisticsComponent],
 	imports: [
 		CommonModule,
 		MapRoutingModule,

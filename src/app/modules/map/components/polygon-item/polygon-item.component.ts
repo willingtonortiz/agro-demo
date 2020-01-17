@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngxs/store';
+import { PolygonsActions } from 'src/app/store/polygons/polygons.actions';
 
 @Component({
 	selector: 'app-polygon-item',
@@ -18,7 +19,11 @@ export class PolygonItemComponent implements OnInit {
 	}
 
 	public selectPolygon() {
+		this.store.dispatch([new PolygonsActions.SetCurrentPolygon(this.polygon.agroApiId)])
 		console.log(this.polygon);
-		console.log("Clicked");
+	}
+
+	public fetchPolygonInfo() {
+		this.store.dispatch([new PolygonsActions.FetchCurrentPolygonInfo()]);
 	}
 }
