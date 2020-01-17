@@ -1,4 +1,4 @@
-import { State, StateContext, Action, Selector } from '@ngxs/store';
+import { State, StateContext, Action, Selector, NgxsOnInit } from '@ngxs/store';
 import { AgroApiHttpService } from 'src/app/services/agro-api-http.service';
 import { PolygonsActions } from './polygons.actions';
 
@@ -24,10 +24,14 @@ export interface PolygonsStateModel {
 		polygons: [],
 	}
 })
-export class PolygonsState {
+export class PolygonsState implements NgxsOnInit {
 	public constructor(
 		private readonly agroApiHttpService: AgroApiHttpService
 	) {
+	}
+
+	ngxsOnInit({dispatch}: StateContext<PolygonsStateModel>) {
+		dispatch([new PolygonsActions.FetchPolygons()]);
 	}
 
 	@Selector()
