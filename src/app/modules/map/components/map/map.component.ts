@@ -74,8 +74,12 @@ export class MapComponent implements AfterViewInit {
 		});
 		this.map.addControl(drawControl);
 
+		this.makerService.setMap(this.map);
+		this.makerService.setDrawItems(this.drawItems);
+
+
 		this.map.on(Leaflet.Draw.Event.CREATED, (event) => {
-			this.makerService.makePolygon(this.map, this.drawItems, event);
+			this.makerService.makePolygon(event);
 		});
 
 		/*var imageUrl = 'http://api.agromonitoring.com/image/1.0/1205d40da00/5e1f706a4fcefd6d32f91021?appid=9d411dc6b0e4cc020bd8b3b2e4ef69cc';

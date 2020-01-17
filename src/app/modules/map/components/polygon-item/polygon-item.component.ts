@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { PolygonsActions } from 'src/app/store/polygons/polygons.actions';
+import { MakerService } from 'src/app/services/maker/maker.service';
 
 @Component({
 	selector: 'app-polygon-item',
@@ -11,7 +12,7 @@ export class PolygonItemComponent implements OnInit {
 
 	@Input() polygon: any;
 
-	constructor(private store: Store) {
+	constructor(private store: Store, private makerService: MakerService) {
 		this.polygon = {};
 	}
 
@@ -25,5 +26,7 @@ export class PolygonItemComponent implements OnInit {
 
 	public fetchPolygonInfo() {
 		this.store.dispatch([new PolygonsActions.FetchCurrentPolygonInfo()]);
+		this.makerService.drawPolygon(this.polygon.coordinates,this.polygon.area);
+		console.log("Clicked");
 	}
 }
