@@ -20,7 +20,7 @@ export class PolygonItemComponent implements OnInit {
 
 	public selectPolygon() {
 		console.log(this.polygon);
-		this.makerService.drawPolygon(this.polygon.coordinates);
+		this.makerService.drawPolygon(this.polygon.coordinates,this.polygon.area);
 		console.log("Clicked");
 	}
 }
