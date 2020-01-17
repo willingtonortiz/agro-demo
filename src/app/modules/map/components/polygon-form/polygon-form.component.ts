@@ -1,8 +1,9 @@
- 
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { PolygonActions } from '../../../../store/polygon/polygon.actions';
+import { PolygonsActions } from 'src/app/store/polygons/polygons.actions';
 
 @Component({
 	selector: 'app-polygon-form',
@@ -39,5 +40,9 @@ export class PolygonFormComponent {
 
 	public get fId(): AbstractControl {
 		return this.polygonForm.get("id");
+	}
+
+	public fetchAllPolygons() {
+		this.store.dispatch([new PolygonsActions.FetchPolygons()])
 	}
 }

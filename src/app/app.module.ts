@@ -13,6 +13,7 @@ import { MapComponent } from './modules/map/components/map/map.component';
 import { PolygonFormComponent } from './modules/map/components/polygon-form/polygon-form.component';
 import { PolygonState } from './store/polygon/polygon.state';
 import { SharedModule } from './modules/shared/shared.module';
+import { PolygonsState } from './store/polygons/polygons.state';
 
 @NgModule({
 	declarations: [
@@ -26,7 +27,7 @@ import { SharedModule } from './modules/shared/shared.module';
 		HttpClientModule,
 		ReactiveFormsModule,
 
-		NgxsModule.forRoot([PolygonState]),
+		NgxsModule.forRoot([PolygonState, PolygonsState]),
 		NgxsReduxDevtoolsPluginModule.forRoot(),
 
 		SharedModule
