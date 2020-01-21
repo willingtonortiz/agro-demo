@@ -77,6 +77,12 @@ export class MapComponent implements AfterViewInit {
 		this.makerService.setMap(this.map);
 		this.makerService.setDrawItems(this.drawItems);
 
+		var polygonDrawer = new Leaflet.Draw.Polygon(this.map);
+
+		document.querySelector('button#dibujar').addEventListener('click', function () {
+			console.log("Dibuja ahora")
+			polygonDrawer.enable();
+		});
 
 		this.map.on(Leaflet.Draw.Event.CREATED, (event) => {
 			this.makerService.makePolygon(event);
